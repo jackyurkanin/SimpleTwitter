@@ -88,8 +88,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
                 ivImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
                         .load(tweet.entities.imageUrl)
-                        .centerCrop()
                         .override(200, 200)
+                        .centerCrop()
                         .transform(new RoundedCorners(30))
                         .into(ivImage);
             }else{
