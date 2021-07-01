@@ -17,6 +17,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
+
+
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
     Context context;
@@ -59,10 +62,14 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
+        public int radius = 30;
+        public int margin = 10;
+
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
         TextView tvRelativeTime;
+        ImageView ivImage;
 
         public ViewHolder(@NonNull @NotNull View itemView) {
             super(itemView);
@@ -70,6 +77,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvBody = itemView.findViewById(R.id.tvBody);
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvRelativeTime = itemView.findViewById(R.id.tvRelativeTime);
+            ivImage = itemView.findViewById(R.id.ivImage);
 
         }
 
@@ -78,6 +86,13 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvScreenName.setText(tweet.user.screenName);
             tvRelativeTime.setText(tweet.getRelativeTimeAgo(tweet.createdAt));
             Glide.with(context).load(tweet.user.publicImageUrl).into(ivProfileImage);
+            if (tweet.entities != null) {
+                Glide.with(context)
+                        .load(tweet.entities.imageUrl)
+                        .centerCrop()
+                        .transform(new RoundedCornersTransformation(radius, margin))
+                        .into(ivImage);
+            }
         }
     }
 }
