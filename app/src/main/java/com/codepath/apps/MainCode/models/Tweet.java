@@ -18,6 +18,7 @@ import java.util.Locale;
 public class Tweet {
     public String body;
     public String createdAt;
+    public int tweetID;
     public User user;
     public Entities entities;
     public String imageUrl;
@@ -32,6 +33,7 @@ public class Tweet {
     public static Tweet fromJson(JSONObject jsonObject) throws JSONException {
         Tweet tweet = new Tweet();
         tweet.body = jsonObject.getString("full_text");
+        tweet.tweetID = jsonObject.getInt("id");
         tweet.createdAt = jsonObject.getString("created_at");
         tweet.user = User.fromJson(jsonObject.getJSONObject("user"));
         if(!jsonObject.isNull("extended_entities")) {

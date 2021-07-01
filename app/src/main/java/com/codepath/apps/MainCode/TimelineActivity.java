@@ -31,9 +31,12 @@ import okhttp3.Headers;
 
 public class TimelineActivity extends AppCompatActivity {
 
-    private static final String TAG = "Debugd";
+    public static final String DEBUG = "Debug";
+    private static final String TAG = "TimelineActivity";
     private final int REQUEST_CODE = 1234;
-    
+    public static long MAX_ID = 0;
+
+    private EndlessRecyclerViewScrollListener scrollListener;
     TwitterClient client;
     RecyclerView rvTweets;
     List<Tweet> tweets;
@@ -52,7 +55,6 @@ public class TimelineActivity extends AppCompatActivity {
         setContentView(view);
 
         client = TwitterApp.getRestClient(this);
-        rvTweets = binding.rvTweets;
 
         btnLogout = binding.btnLogout;
         btnLogout.setOnClickListener(new View.OnClickListener() {
@@ -62,12 +64,24 @@ public class TimelineActivity extends AppCompatActivity {
                 finish(); // navigate backwards to Login screen
             }
         });
-        
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
-        rvTweets.setLayoutManager(new LinearLayoutManager(this));
+        rvTweets = binding.rvTweets;
+        rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(adapter);
         rvTweets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        scrollListener = new EndlessRecyclerViewScrollListener(linearLayoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                // Triggered only when new data needs to be appended to the list
+                // Add whatever code is needed to append new items to the bottom of the list
+                loadNextDataFromApi(page);
+            }
+        };
+        // Adds the scroll listener to RecyclerView
+        rvTweets.addOnScrollListener(scrollListener);
+
         populateHomeTimeline();
 
         swipeContainer = binding.swipeContainer;
@@ -88,11 +102,26 @@ public class TimelineActivity extends AppCompatActivity {
                 android.R.color.holo_red_light);
     }
 
+    public void loadNextDataFromApi(int offset) {
+        // Send an API request to retrieve appropriate paginated data
+        //  --> Send the request including an offset value (i.e `page`) as a query parameter.
+        //  --> Deserialize and construct new model objects from the API response
+        //  --> Append the new data objects to the existing set of items inside the array of items
+        //  --> Notify the adapter of the new items made with `notifyItemRangeInserted()`
+        // 2. Notify the adapter of the update
+        // or notifyItemRangeRemoved
+        // 3. Reset endless scroll listener when performing a new search
+        scrollListener.resetState();
+        populateHomeTimeline();
+    }
+
     public void fetchTimelineAsync(int page) {
         // Send the network request to fetch the updated data
         // `client` here is an instance of Android Async HTTP
         // getHomeTimeline is an example endpoint.
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+
+        MAX_ID = 0;
+        client.getHomeTimeline(MAX_ID, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
                 // Remember to CLEAR OUT old items before appending in the new ones
@@ -142,26 +171,26 @@ public class TimelineActivity extends AppCompatActivity {
     }
 
     private void populateHomeTimeline() {
-        client.getHomeTimeline(new JsonHttpResponseHandler() {
+        client.getHomeTimeline(MAX_ID, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Headers headers, JSON json) {
-                Log.e(TAG, "onSuccess!" + json.toString());
+                Log.i(TAG, "onSuccess!" + json.toString());
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
+                    Log.e(DEBUG, tweets.toString());
+                    Tweet lastTweet = tweets.get(tweets.size() - 1);
+                    MAX_ID = lastTweet.tweetID - 1;
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     Log.e(TAG, "json Exception", e);
                 }
-
             }
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable throwable) {
                 Log.e(TAG, "onFailure!" + response, throwable);
-
             }
         });
-
     }
 }

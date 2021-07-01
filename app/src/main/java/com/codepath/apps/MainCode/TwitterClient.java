@@ -29,10 +29,10 @@ public class TwitterClient extends OAuthBaseClient {
 	private static final String PUBLISH_TWEET = "statuses/update.json";
 	// Landing page to indicate the OAuth flow worked in case Chrome for Android 25+ blocks navigation back to the app.
 	private static final String FALLBACK_URL = "https://codepath.github.io/android-rest-client-template/success.html";
-	private int MAX_ID = 1;
 
 	// See https://developer.chrome.com/multidevice/android/intents
 	private static final String REST_CALLBACK_URL_TEMPLATE = "intent://%s#Intent;action=android.intent.action.VIEW;scheme=%s;package=%s;S.browser_fallback_url=%s;end";
+	private static final int COUNT = 25;
 
 	public TwitterClient(Context context) {
 		super(context, REST_API_INSTANCE,
@@ -45,13 +45,15 @@ public class TwitterClient extends OAuthBaseClient {
 	}
 
 	// Get the Home Timeline for the Twitter home screen
-	public void getHomeTimeline(JsonHttpResponseHandler handler) {
+	public void getHomeTimeline(long maxId, JsonHttpResponseHandler handler) {
 		String apiUrl = getApiUrl(HOME_TIMELINE);
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
 		params.put("tweet_mode", "extended");
-		params.put("count", 25);
-		params.put("since_id", MAX_ID);
+		if (maxId != 0) {
+			params.put("max_id", maxId);
+		}
+		params.put("count", COUNT);
 		client.get(apiUrl, params, handler);
 	}
 
