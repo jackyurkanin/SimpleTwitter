@@ -1,6 +1,7 @@
 package com.codepath.apps.MainCode.models;
 
 import android.util.Log;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +12,7 @@ import org.parceler.Parcel;
 public class Entities {
 
     public String imageUrl;
+    public String heightImage;
     private static final String TAG = "EMBEDDED_IMAGE";
 
     public Entities() {}
@@ -18,9 +20,12 @@ public class Entities {
     public static Entities fromJson(JSONObject jsonObject) throws JSONException {
         Entities entities = new Entities();
         try {
-            JSONArray media = jsonObject.getJSONArray("media");
-            entities.imageUrl = String.valueOf(media.getJSONObject(0).getString("media_url_https"));
-            Log.i(TAG, String.valueOf(media.getJSONObject(0)));
+            JSONArray mediaArray = jsonObject.getJSONArray("media");
+            JSONObject media = mediaArray.getJSONObject(0);
+            entities.imageUrl = media.getString("media_url_https");
+            //JSONObject sizes = media.getJSONObject(0).getJSONObject("sizes");
+            //entities.heightImage = sizes.getJSONObject("small").getString("h");
+            Log.i(TAG, media.toString());
         } catch (JSONException e) {
             Log.e(TAG, "There was no image to get", e);
         }

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.codepath.apps.MainCode.models.Tweet;
 
 import org.jetbrains.annotations.NotNull;
@@ -62,9 +63,6 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public int radius = 30;
-        public int margin = 10;
-
         ImageView ivProfileImage;
         TextView tvBody;
         TextView tvScreenName;
@@ -78,20 +76,24 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             tvScreenName = itemView.findViewById(R.id.tvScreenName);
             tvRelativeTime = itemView.findViewById(R.id.tvRelativeTime);
             ivImage = itemView.findViewById(R.id.ivImage);
-
         }
 
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
+            //ivImage.setMinimumHeight(Integer.parseInt(tweet.entities.heightImage));
             tvScreenName.setText(tweet.user.screenName);
             tvRelativeTime.setText(tweet.getRelativeTimeAgo(tweet.createdAt));
-            Glide.with(context).load(tweet.user.publicImageUrl).into(ivProfileImage);
+            Glide.with(context).load(tweet.user.publicImageUrl).circleCrop().into(ivProfileImage);
             if (tweet.entities != null) {
+                ivImage.setVisibility(View.VISIBLE);
                 Glide.with(context)
                         .load(tweet.entities.imageUrl)
                         .centerCrop()
-                        .transform(new RoundedCornersTransformation(radius, margin))
+                        .override(200, 200)
+                        .transform(new RoundedCorners(30))
                         .into(ivImage);
+            }else{
+                ivImage.setVisibility(View.GONE);
             }
         }
     }

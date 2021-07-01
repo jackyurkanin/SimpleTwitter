@@ -29,6 +29,7 @@ public class TwitterClient extends OAuthBaseClient {
 	private static final String PUBLISH_TWEET = "statuses/update.json";
 	// Landing page to indicate the OAuth flow worked in case Chrome for Android 25+ blocks navigation back to the app.
 	private static final String FALLBACK_URL = "https://codepath.github.io/android-rest-client-template/success.html";
+	private int MAX_ID = 1;
 
 	// See https://developer.chrome.com/multidevice/android/intents
 	private static final String REST_CALLBACK_URL_TEMPLATE = "intent://%s#Intent;action=android.intent.action.VIEW;scheme=%s;package=%s;S.browser_fallback_url=%s;end";
@@ -50,7 +51,7 @@ public class TwitterClient extends OAuthBaseClient {
 		RequestParams params = new RequestParams();
 		params.put("tweet_mode", "extended");
 		params.put("count", 25);
-		params.put("since_id", 1);
+		params.put("since_id", MAX_ID);
 		client.get(apiUrl, params, handler);
 	}
 
