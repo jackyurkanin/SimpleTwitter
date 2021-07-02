@@ -41,33 +41,21 @@ public class TimelineActivity extends AppCompatActivity {
     RecyclerView rvTweets;
     List<Tweet> tweets;
     TweetsAdapter adapter;
-    Button btnLogout;
     SwipeRefreshLayout swipeContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         ActivityTimelineBinding binding = ActivityTimelineBinding.inflate(getLayoutInflater());
-
-        // layout of activity is stored in a special property called root
         View view = binding.getRoot();
         setContentView(view);
 
         client = TwitterApp.getRestClient(this);
 
-        btnLogout = binding.btnLogout;
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                client.clearAccessToken(); // forget who's logged in
-                finish(); // navigate backwards to Login screen
-            }
-        });
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         tweets = new ArrayList<>();
         adapter = new TweetsAdapter(this, tweets);
         rvTweets = binding.rvTweets;
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvTweets.setLayoutManager(linearLayoutManager);
         rvTweets.setAdapter(adapter);
         rvTweets.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -138,7 +126,7 @@ public class TimelineActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Headers headers, String response, Throwable e) {
-                Log.d("DEBUG", "Fetch timeline error: " + e.toString());
+                Log.d(TAG, "Fetch timeline error: " + e.toString());
             }
         });
     }
@@ -154,6 +142,10 @@ public class TimelineActivity extends AppCompatActivity {
         if (item.getItemId() == R.id.compose) {
             Intent intent = new Intent(this, ComposeActivity.class);
             startActivityForResult(intent, REQUEST_CODE);
+            return true;
+        } else if (item.getItemId() == R.id.logOut) {
+            client.clearAccessToken(); // forget who's logged in
+            finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -178,7 +170,6 @@ public class TimelineActivity extends AppCompatActivity {
                 JSONArray jsonArray = json.jsonArray;
                 try {
                     tweets.addAll(Tweet.fromJsonArray(jsonArray));
-                    Log.e(DEBUG, tweets.toString());
                     Tweet lastTweet = tweets.get(tweets.size() - 1);
                     MAX_ID = lastTweet.tweetID - 1;
                     adapter.notifyDataSetChanged();

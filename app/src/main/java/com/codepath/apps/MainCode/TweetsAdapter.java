@@ -18,8 +18,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
-
 
 public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder> {
 
@@ -65,6 +63,7 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
 
         ImageView ivProfileImage;
         TextView tvBody;
+        TextView tvName;
         TextView tvScreenName;
         TextView tvRelativeTime;
         ImageView ivImage;
@@ -73,7 +72,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
             super(itemView);
             ivProfileImage = itemView.findViewById(R.id.ivProfileImage);
             tvBody = itemView.findViewById(R.id.tvBody);
-            tvScreenName = itemView.findViewById(R.id.tvScreenName);
+            tvScreenName = itemView.findViewById(R.id.tvHandle);
+            tvName = itemView.findViewById(R.id.tvName);
             tvRelativeTime = itemView.findViewById(R.id.tvRelativeTime);
             ivImage = itemView.findViewById(R.id.ivImage);
         }
@@ -81,7 +81,8 @@ public class TweetsAdapter extends RecyclerView.Adapter<TweetsAdapter.ViewHolder
         public void bind(Tweet tweet) {
             tvBody.setText(tweet.body);
             //ivImage.setMinimumHeight(Integer.parseInt(tweet.entities.heightImage));
-            tvScreenName.setText(tweet.user.screenName);
+            tvScreenName.setText("@" + tweet.user.screenName);
+            tvName.setText(tweet.user.name);
             tvRelativeTime.setText(tweet.getRelativeTimeAgo(tweet.createdAt));
             Glide.with(context).load(tweet.user.publicImageUrl).circleCrop().into(ivProfileImage);
             if (tweet.entities != null) {
