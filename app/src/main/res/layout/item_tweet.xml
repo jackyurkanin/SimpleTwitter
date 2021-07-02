@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:layout_margin="5dp"
     android:layout_marginBottom="5dp">
 
@@ -45,6 +45,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="10dp"
         android:layout_toRightOf="@+id/ivProfileImage"
+        android:autoLink="all"
         tools:text="This is the body of the tweet :)" />
 
     <ImageView
