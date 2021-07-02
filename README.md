@@ -1,8 +1,8 @@
-# Project 3 - *Name of App Here*
+# Project 3 - Simple Twitter
 
-**Name of your app** is an android app that allows a user to view their Twitter timeline and post a new tweet. The app utilizes [Twitter REST API](https://dev.twitter.com/rest/public).
+Simple Twitter is an android app that allows a user to view their Twitter timeline and post a new tweet. The app utilizes the Twitter REST API (https://dev.twitter.com/rest/public).
 
-Time spent: **X** hours spent in total
+Time spent: 25 hours spent in total
 
 ## User Stories
 
@@ -23,7 +23,7 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-* [Some] User is using **"Twitter branded" colors and styles**
+* [ ] User is using **"Twitter branded" colors and styles**
 * [ ] User sees an **indeterminate progress indicator** when any background or network task is happening
 * [ ] User can **select "reply" from home timeline to respond to a tweet**
   * [ ] User that wrote the original tweet is **automatically "@" replied in compose**
@@ -52,7 +52,7 @@ GIF created with [Kap](https://getkap.co/).
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Had difficulty with images but was resolved.
 
 ## Open-source libraries used
 
